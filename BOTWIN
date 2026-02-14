@@ -16,3 +16,123 @@ dependencies:
 
 flutter:
   uses-material-design: true
+
+import 'package:flutter/material.dart';
+import 'home_screen.dart';
+
+void main() {
+  runApp(const BotWinApp());
+}
+
+class BotWinApp extends StatelessWidget {
+  const BotWinApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: HomeScreen(),
+    );
+  }
+}
+
+import 'package:flutter/material.dart';
+import 'dart:math';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  String signal = "NEUTRAL";
+  int score = 50;
+  double stopLoss = 0;
+  double takeProfit = 0;
+
+  void generateSignal() {
+    final random = Random();
+    int value = random.nextInt(100);
+
+    if (value > 60) {
+      signal = "BUY";
+    } else if (value < 40) {
+      signal = "SELL";
+    } else {
+      signal = "NEUTRAL";
+    }
+
+    score = value;
+
+    double atr = 20 + random.nextDouble() * 30;
+    stopLoss = atr;
+    takeProfit = atr * 2;
+
+    setState(() {});
+  }
+
+  Color getColor() {
+    if (signal == "BUY") return Colors.green;
+    if (signal == "SELL") return Colors.red;
+    return Colors.grey;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        title: const Text("BOTWIN SIGNAL JR"),
+        backgroundColor: Colors.black,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+
+            Text(
+              signal,
+              style: TextStyle(
+                fontSize: 48,
+                fontWeight: FontWeight.bold,
+                color: getColor(),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            Text(
+              "Confiança: $score%",
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 22,
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            Text(
+              "Stop Loss: ${stopLoss.toStringAsFixed(2)}",
+              style: const TextStyle(color: Colors.white),
+            ),
+
+            Text(
+              "Take Profit: ${takeProfit.toStringAsFixed(2)}",
+              style: const TextStyle(color: Colors.white),
+            ),
+
+            const SizedBox(height: 40),
+
+            ElevatedButton(
+              onPressed: generateSignal,
+              child: const Text("Gerar Sinal IA"),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
